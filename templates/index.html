@@ -1,0 +1,202 @@
+<!-- <html>
+    <body>
+        <h1>
+            Hello World
+        </h1>
+        <form action = "http://127.0.0.1:8000/" method = "POST">
+            {% csrf_token %}
+            <label for="username">Ip camera user name: </label>
+            <input id="username" type="text" name="username">
+            <label for="password">Ip camera password: </label>
+            <input id="password" type="text" name="password">
+            <label for="cameraip">Ip address: </label>
+            <input id="cameraip" type="text" name="cameraip">
+            <label for="ipport">Ip camera port: </label>
+            <input id="ipport" type="text" name="ipport">
+            <input type="submit" value="OK">
+
+        </form>
+    </body>
+</html> -->
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8" /> 
+<link rel="stylesheet" href="{% static '/css/main.css' %}" />
+<Script src="{% static '/js/main.js' %}"></script>
+<title>Peak Detection</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    background-color: #f8f8f8;
+    font-family: 'Open Sans', sans-serif;
+  }
+  
+  form {
+    width: 400px;
+    margin: 5% auto 15% auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .form-field {
+    position: relative;
+    margin-bottom: 25px;
+  }
+  
+  .form-field input {
+    width: 100%;
+    height: 50px;
+    padding: 10px 20px;
+    border: none;
+    border-bottom: 2px solid #ddd;
+    font-size: 18px;
+    font-weight: 500;
+    background-color: transparent;
+    transition: all 0.3s ease;
+  }
+  
+  .form-field input:focus {
+    outline: none;
+    border-bottom: 2px solid #f1c40f;
+  }
+  
+  .form-field label {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    color: #777;
+    font-size: 18px;
+    font-weight: 500;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+  
+  .form-field input:focus ~ label, .form-field input:valid ~ label {
+    top: -20px;
+    left: 0;
+    font-size: 14px;
+    color: #f1c40f;
+  }
+  
+  button[type="submit"] {
+    display: block;
+    margin: 30px auto 0;
+    padding: 10px 20px;
+    border: none;
+    background-color: #f1c40f;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #e67e22;
+  }
+
+  .heading{
+    font-size: 23px;
+    color:black;
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+    margin: 10% auto 1% auto;
+
+  }
+  
+  .button-container {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .button-container button {
+        margin: 0 10px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: 500;
+        background-color: #f1c40f;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .button-container button:hover {
+        background-color: #e67e22;
+      }
+
+   
+  
+
+</style>
+
+</head>
+
+<body>
+    <h1 class="heading">Please Enter the Details:</h1>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div class="form-field">
+          <input type="text" id="start_x" name="start_x" value="5625" required>
+          <label for="start_x">start x</label>
+          </div>
+  
+        <div class="form-field">
+          <input type="text" id="stop_x" name="stop_x" value="5925"  required>
+          <label for="stop_x">stop x</label>
+        </div>
+        
+        <div class="form-field">
+          <input type="text" id="start_y" name="start_y" value="-110" required>
+          <label for="start_y">start y</label>
+        </div>
+        <div class="form-field">
+          <input type="text" id="stop_y" name="stop_y" value="-19" required>
+          <label for="stop_y">stop y</label> 
+        </div>
+        <div class="form-field">
+          <input type="text" id="peak_video" name="peak_video" value="myvideo.mp4" >
+          <label for="peak_video">peak video</label> 
+        </div>
+        <div class="form-field">
+          <input type="text" id="video" name="video" value="video.mp4">
+          <label for="video">video</label> 
+        </div>
+        <div class="form-field">
+          <input type="text" id="csv_records_limit" name="csv_records_limit" value="50" required>
+          <label for="csv_records_limit">csv_records_limit</label> 
+        </div>
+        <div class="form-field">
+          <input type="text" id="output_folder" name="output_folder" value="outputs" required>
+          <label for="output_folder">output_folder</label> 
+        </div>
+        <!-- <div class="form-field">
+          <input type="text" id="csv_records_limit" name="csv_records_limit" required>
+          <label for="csv_records_limit">csv_records_limit</label> 
+        </div> -->
+        
+        <button type="submit" name="Peak_detection" value="peak">Peak Detection</button>
+        <button type="submit" name="objects" value="object">Detect Objects</button>
+        <button type="submit" name="stream_all" value="stream_all">Detect Both</button>
+      </form>
+      
+        
+       
+            
+       
+      
+
+</body>
+</html>

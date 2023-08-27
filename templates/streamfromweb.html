@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Object Detection</title>
+    <style>
+         .video-container {
+        position: relative;
+        width: 70%;
+        margin: 3% auto;
+        height: auto;
+        border: 5px solid #3498db;
+        /* padding-bottom: 56.25%; */
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+        flex-basis: 48%;
+      }
+
+      .video-container img {
+        /* position: absolute; */
+        display: block;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        object-fit: contain;
+      }
+
+
+
+    </style>
+</head>
+<body>
+    <h1>Camera Object Detection</h1>
+    <video id="camera-feed" style="display:none;" autoplay></video>
+    <div class="video-container">
+    <canvas id="canvas" style="display:none;"></canvas>
+    <!-- <img id="processed-frame" style="width: 1280px;height:720px;"></img> -->
+    <img id="processed-frame"></img>
+    </div>
+    <script>
+        const videoElement = document.getElementById('camera-feed');
+        const canvas = document.getElementById('canvas');
+        canvas.width = 1280;
+        canvas.height = 720;
+        const context = canvas.getContext('2d');
+        const processedFrameElement = document.getElementById('processed-frame');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                videoElement.srcObject = stream;
+                const ws = new WebSocket('ws://localhost:8000/ws/'); // WebSocket URL
+                ws.onopen = () => {
+                    // ws.send(JSON.stringify({{FormData}}));
+                    setInterval(() => {
+                        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                        const frameData = canvas.toDataURL('image/jpeg'); // Convert to suitable format
+                        ws.send(JSON.stringify({"frameData":frameData}));
+                    }, 1000);
+                };
+
+                ws.onmessage = (event) => {
+                    const processedFrameData = event.data;
+                    const b64processedFrameData = JSON.parse(processedFrameData)
+                    fprocessedFrameData = b64processedFrameData.processedFrame
+                    processedFrameElement.src = 'data:image/jpeg;base64,' + fprocessedFrameData;
+                };
+            })
+            .catch((error) => {
+                console.error('Error accessing camera:', error);
+            });
+    </script>
+</body>
+</html>

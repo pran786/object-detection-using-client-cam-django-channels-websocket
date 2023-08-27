@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Video Streaming</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      .video-container {
+        position: relative;
+        width: 70%;
+        margin: 3% auto;
+        height: auto;
+        border: 5px solid #3498db;
+        /* padding-bottom: 56.25%; */
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+      }
+
+      .video-container img {
+        /* position: absolute; */
+        display: block;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        object-fit: contain;
+      }
+
+      .button-container {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .button-container button {
+        margin: 0 10px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: 500;
+        background-color: #f1c40f;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .button-container button:hover {
+        background-color: #e67e22;
+      }
+
+      .heading{
+    font-size: 23px;
+    color:black;
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+    margin: 5% auto 2% auto;
+
+  }
+
+
+
+  /* Table Styles */
+
+.table-container {
+  position: relative;
+  width: 70%;
+  margin: 3% auto;
+  
+  
+  /* padding-bottom: 56.25%; */
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  
+  }
+
+table {
+  width: 80%;
+  border-collapse: collapse;
+  border: 1px solid #ccc;
+  overflow-y: auto; /* Add vertical scrollbar */
+  max-height: 240px; /* Set the maximum height to show only 10 rows */
+}
+th, td {
+  padding: 8px;
+  text-align: center;
+}
+
+thead {
+  background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1c40f;
+}
+
+
+    </style>
+  </head>
+  <body>
+    <h1 class="heading">Your Ip camera live stream:</h1>
+    <div class="video-container">
+      <img id="video" src="{% url 'peak_detection' %}" alt="Video stream">
+    </div>
+    
+      </form>
+    </div>
+    <h1 class="heading">Peak detection table Time and x*y</h1>
+    <div class="table-container">
+    <table id="result-table">
+      <thead>
+        <tr>
+          <th>Time</Frame></th>
+          <th>Formula</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Table rows will be dynamically added here -->
+      </tbody>
+    </table>
+    </div>
+    <script>
+      // Function to fetch data from the API
+  async function fetchData() {
+    try {
+      const response = await fetch('/Peak_jsondata');
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      return null;
+    }
+  }
+  
+  // Function to update the table with new data
+  // function updateTable(data) {
+  //   const tableBody = document.querySelector('#result-table tbody');
+  //   const newRow = document.createElement('tr');
+  //   const frameCell = document.createElement('td');
+  //   const formulaCell = document.createElement('td');
+  
+  //   frameCell.textContent = data.Time; // Replace 'frame' with the key for the frame number in your API response
+  //   formulaCell.textContent = data.formula; // Replace 'formula' with the key for the formula in your API response
+  
+  //   newRow.appendChild(frameCell);
+  //   newRow.appendChild(formulaCell);
+  //   tableBody.appendChild(newRow);
+  // }
+  
+  // Function to update the table with new data
+  function updateTable(data) {
+    const tableBody = document.querySelector('#result-table tbody');
+    const newRow = document.createElement('tr');
+    const frameCell = document.createElement('td');
+    const formulaCell = document.createElement('td');
+  
+    frameCell.textContent = data.Time;
+    formulaCell.textContent = data.formula;
+  
+    newRow.appendChild(frameCell);
+    newRow.appendChild(formulaCell);
+    tableBody.appendChild(newRow);
+  
+    //Show only a fixed number of rows (e.g., 10) and add a scrollbar
+    const maxRows = 5;
+    const rowsCount = tableBody.getElementsByTagName('tr').length;
+    if (rowsCount > maxRows) {
+      tableBody.removeChild(tableBody.childNodes[0]);
+    }
+  }
+  
+  
+  // Function to periodically update the table
+  async function updateTablePeriodically() {
+    const intervalMs = 500; // Set the interval in milliseconds (e.g., 500ms = half a second)
+  
+    while (true) {
+      const data = await fetchData();
+      if (data) {
+        updateTable(data);
+      }
+      await new Promise(resolve => setTimeout(resolve, intervalMs));
+    }
+  }
+  
+  // Start updating the table
+  updateTablePeriodically();
+  
+    </script>  
+  </body>
+</html>
